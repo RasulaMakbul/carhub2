@@ -1,0 +1,9 @@
+CREATE TABLE `wp_students_data` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `age` int(5) DEFAULT NULL,
+  `phone` varchar(30) DEFAULT NULL,
+  `photo` varchar(120) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci

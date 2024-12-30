@@ -21,3 +21,16 @@
  function sp_show_static_message(){
     return "<p style='font-size:40px; font-weight:bold; color:red;'>Hello I am a simple static message</p>";
  }
+
+
+ add_shortcode("student","sp_handle_student_data");
+
+ function sp_handle_student_data($attributes) {
+    $attributes = shortcode_atts(array(
+        "name"=>"Default Student",
+        "email"=>"Default Email",
+        
+    ), $attributes, "student");
+
+    return "<h3>Student Data: Name- {$attributes['name']}  & Email - {$attributes['email']}</h3>";
+ }
