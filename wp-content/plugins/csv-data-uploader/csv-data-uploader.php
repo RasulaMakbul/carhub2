@@ -79,17 +79,103 @@ function cdu_add_script_file() {
 add_action("wp_ajax_cdu_submit_form_data","cdu_ajax_handler"); //when user is logged in
 add_action("wp_ajax_nopriv_cdu_submit_form_data","cdu_ajax_handler"); //when user is logged out
 
-function cdu_ajax_handler() {
+// function cdu_ajax_handler() {
 
-    if($_FILES['csv_data_file']){
-        $csv_file=$_FILES['csv_data_file']['tmp_name'];
-        $handle=fopen($csv_file,"r");
-    } else{
-        echo json_encode(array(
-                "status"=>1,
-                "message"=>"No File Found"
-            ));
-        }
+//     if($_FILES['csv_data_file']){
+//         $csv_file=$_FILES['csv_data_file']['tmp_name'];
+//         $handle=fopen($csv_file,"r");
+
+//         global $wpdb;
+//         // $table_name=$wpdb->prefix."wp_students_data";
+//         $table_name = $wpdb->prefix . "students_date"; 
+//         if($handle){
+//             $row=0;
+//             while($data=fgetcsv($handle,1000,",")!=FALSE){
+//                 if($row==0){
+//                     $row++;
+//                     continue;
+//                 }
+
+//                 error_log("Row Data: " . print_r($data, true));
+
+
+                
+//                 //insert data into row
+//                 $name = !empty($data[1]) ? $data[1] : null;
+//                 $email = !empty($data[2]) ? $data[2] : null;
+//                 $age = !empty($data[3]) ? intval($data[3]) : null;
+//                 $phone = !empty($data[4]) ? $data[4] : null;
+//                 $photo = !empty($data[5]) ? $data[5] : null;
+
+//                 $wpdb->insert($table_name, array(
+//                     "name"  => $name,
+//                     "email" => $email,
+//                     "age"   => $age,
+//                     "phone" => $phone,
+//                     "photo" => $photo,
+//                 ));
+//             }
+
+//             fclose($handle);
+
+//             echo json_encode([
+//                 "status"=>1,
+//                 "message"=>"Data uloaded successfully"
+//             ]);
+//         }
+//     } else{
+//         echo json_encode(array(
+//                 "status"=>1,
+//                 "message"=>"No File Found"
+//             ));
+//         }
     
+//     exit;
+// }
+
+function cdu_ajax_handler() {
+    if (!empty($_FILES['csv_data_file']['tmp_name'])) {
+        $csv_file = $_FILES['csv_data_file']['tmp_name'];
+        $handle = fopen($csv_file, "r");
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . "students_date";
+
+        if ($handle) {
+            $row = 0;
+            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                if ($row == 0) {
+                    $row++;
+                    continue;
+                }
+
+                $wpdb->insert($table_name, array(
+                    "name"  => $data[1] ?? null,
+                    "email" => $data[2] ?? null,
+                    "age"   => intval($data[3] ?? 0),
+                    "phone" => $data[4] ?? null,
+                    "photo" => $data[5] ?? null,
+                ));
+            }
+
+            fclose($handle);
+
+            echo json_encode([
+                "status" => 1,
+                "message" => "Data uploaded successfully"
+            ]);
+        } else {
+            echo json_encode([
+                "status" => 0,
+                "message" => "Unable to open the file"
+            ]);
+        }
+    } else {
+        echo json_encode([
+            "status" => 0,
+            "message" => "No file uploaded"
+        ]);
+    }
+
     exit;
 }
